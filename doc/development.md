@@ -20,8 +20,9 @@ The branching model is structured as followed:
 ```
 
 - `main`: Stores official release history, commits should be tagged with a
-  semantic version number (starting at v0.1).
-- `dev`: Integration branch, created from main.
+  semantic version number (starting at v0.1). The branch must be protected.
+- `dev`: Integration branch, created from main. The branch must also be
+  protected.
 - `release`: Once enough features in `develop`, fork a `release` branch off of
   `develop`, merge into `develop` and `main` when done. Naming convention is
   adjectives linked to honey texture
