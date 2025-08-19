@@ -1,27 +1,44 @@
+# `miel` honeypot software requirements
+
+The following document outlines the functional and non-functional requirements
+for the `miel` honeypot software. The goal of this software is to expose various
+containerized services to attract and analyze malicious traffic.
+
 ## Functional requirements
-- Add a new service to honeypot
-  - With the help of configuration files
-  - Match a certain docker image for the new service that will then be used to simulate the service
-- Identify the scan/attack type
-- Locate the origin of the attack (IP, etc.)
-- Return logical responses to retain the attacker
-  - When scanning, returning up port (if service is managed)
-  - Then give access to the ressource (service should be available in other words)
-- Record and store attacker interactions live
-  - Capture payloads and IoCs
-- App should always have a container up for every service it manages to diminish the attacker waiting time 
-(- Filter known ip ranges)
-- Remove a service
-  - Once the attacker is out, container should be sanitized (removed and created again), to garantee a stable environment
-- Handle honeypot general configuration via CLI
+
+The software must meet the following functional requirements:
+
+- Identify the requested service.
+- Allow the user to expose a service to honeypot that must be:
+  - Configured through text files.
+  - Containerizable.
+  - Interactive, if applicable.
+  - Exposable to the internet.
+- Expose containerized service uniquely attached to a session and in isolation.
+- Obfuscate the containerized service as a tangible part of an infrastructure.
+- Record and store the metadata and payloads of the session.
+- Record and store a log of the interactions with the service.
+- Output stored data to a file or a database.
+- Filter the use of specific IP ranges, ports, protocols and services.
+- Present a web interface to view the honeypot status and browse the data.
+- Configurable through text files or command line arguments.
+- Deployable as a single binary.
 
 ## Non-functional requirements
-- Ressource access time should be ... s for the attacker
-- Store logging in a SQLite
-- Documenting the process of adding a service
-  - Formalize configuration files
-- There can be ... requests/s max
-- Modular and testable code
-- Automated tests on the code (unit, integration, etc.)
-( - Dev. a lib that will be used by the binary (this should probably be in the workflow elicitation))
-- API documentation
+
+The software must meet the following non-functional requirements:
+
+- Run on a single host machine with at least 16GB of RAM and 4 CPU cores.
+- Be able deployable on a Debian 12 or later host with Docker 27 or later.
+- The software must not introduce a network latency greater than 100ms when an
+  attacker interacts with the honeypot.
+- The software must scale the number of available service sessions for attackers
+  based on the amount of requests for a service such that the average response
+  time is less than 100ms.
+- Output the data to a text file or store the data in persistent storage.
+- Define and document a protocol for service configuration.
+- Define and document default values for the configuration of the software.
+- Document the codebase and architecture of the software.
+- Document the API and the usage of the web interface.
+- Implement automated testing to ensure the software meets the functional and
+  non-functional requirements.
