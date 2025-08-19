@@ -1,17 +1,27 @@
-## Objectif
-Le projet a pour but de developper un outil permetant a un utilisateur de déployer un service pour attirer un attaquant et observer ses interactions avec le service. L'outil se met en place nativement tant dis que le service repliqué lui sera contenerisé. Toutes les interactions de l'attaquants sont en permanance envoyé du docker vers la machine cliente puis enregistré dans une DB.
-
 ## Functional requirements
-- Créer/démarrer un conteneur pour que l'attaquant puisse interagire avec un service
-- Récolter en continue (simultanément) les interactions de l'atk avec le service
-- Enregistrer les interactions l'atk dans une DB
-- Ajouter un nouveau service a honeypoter
-- Supprimer un service deja mis en place
-- Une fois que l'atk n'utilise plus le service le conteneur associé doit être arreté
-- Associer une certaine image docker pour un nouveau service, cette image sera ensuite utilisée pour créer/lancer un contenaire pour simuler le service en question
+- Add a new service to honeypot
+  - With the help of configuration files
+  - Match a certain docker image for the new service that will then be used to simulate the service
+- Identify the scan/attack type
+- Locate the origin of the attack (IP, etc.)
+- Return logical responses to retain the attacker
+  - When scanning, returning up port (if service is managed)
+  - Then give access to the ressource (service should be available in other words)
+- Record and store attacker interactions live
+  - Capture payloads and IoCs
+- App should always have a container up for every service it manages to diminish the attacker waiting time 
+(- Filter known ip ranges)
+- Remove a service
+  - Once the attacker is out, container should be sanitized (removed and created again), to garantee a stable environment
+- Handle honeypot general configuration via CLI
 
-## Non-functional requirments
-- Le conteneur créer lié au service doit se déployer en ... secondes
-- Besoin d'une DB pour logger les interactions de l'atk 
-- 
-- 
+## Non-functional requirements
+- Ressource access time should be ... s for the attacker
+- Store logging in a SQLite
+- Documenting the process of adding a service
+  - Formalize configuration files
+- There can be ... requests/s max
+- Modular and testable code
+- Automated tests on the code (unit, integration, etc.)
+( - Dev. a lib that will be used by the binary (this should probably be in the workflow elicitation))
+- API documentation
