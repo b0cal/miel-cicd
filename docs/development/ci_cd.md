@@ -54,7 +54,7 @@ The CI/CD pipeline is implemented in two workflow file:
    - Upload built binaries as a GitHub Actions artifact.
 4. **Tag** (conditional)
    - Only runs on pushes to the `main` branch:
-     - Create a new git tag based on the semantic versioning in `Cargo.toml`.
+   - Create a new git tag based on the semantic versioning in `Cargo.toml`.
 
 ### CD workflow
 
@@ -71,9 +71,11 @@ Tags are automatically extracted from the `Cargo.toml` file during the build.
 The release workflow performs the following steps:
 
 1. **Build**
+
 - Build the application with a production profile.
 
 2. **Release**
+
 - Create a new GitHub Release with the tag name and description.
 
 ## Local Testing
