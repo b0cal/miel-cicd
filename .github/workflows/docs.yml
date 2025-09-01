@@ -53,6 +53,23 @@ jobs:
       - name: Build Rust API docs
         run: cargo make core-doc
 
+      - name: Create API index redirect
+        run: |
+          cat > src/core/target/doc/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Miel API Documentation</title>
+            <meta http-equiv="refresh" content="0; url=miel/">
+            <link rel="canonical" href="miel/">
+          </head>
+          <body>
+            <p>Redirecting to <a href="miel/">Miel API Documentation</a>...</p>
+          </body>
+          </html>
+          EOF
+
       - name: Publish rustdoc to gh-pages/api
         if: github.event_name != 'pull_request'
         uses: peaceiris/actions-gh-pages@v3
