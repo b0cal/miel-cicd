@@ -71,12 +71,17 @@ dependencies = ["fmt-fix", "webui-format-fix"]
 [tasks.doc-lint]
 description = "Check documentation formatting"
 cwd = "docs"
-script = ["markdownlint-cli2 **/*.md"]
+script = ["npx markdownlint-cli2 **/*.md"]
 
 [tasks.doc-lint-fix]
 description = "Fix documentation formatting"
 cwd = "docs"
-script = ["markdownlint-cli2 --fix **/*.md"]
+script = ["npx markdownlint-cli2 --fix **/*.md"]
+
+[tasks.core-doc]
+description = "Build Rust API documentation"
+cwd = "src/core"
+script = ["cargo doc --no-deps"]
 
 [tasks.core-audit]
 description = "Audit dependencies for vulnerabilities"
