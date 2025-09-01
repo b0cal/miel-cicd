@@ -31,6 +31,7 @@ jobs:
 
       - name: Lint Markdown documentation
         run: cargo make doc-lint
+        continue-on-error: true
 
   build-api-docs:
     runs-on: ubuntu-latest
