@@ -23,7 +23,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: davidB/rust-cargo-make@v1
       - uses: actions/setup-node@v3
-        with:
+      - uses: actions/checkout@v4
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: src/webui/package-lock.json
@@ -143,3 +143,4 @@ jobs:
           git config user.email "github-actions@github.com"
           git tag "v${{ steps.cargo_version.outputs.version }}"
           git push https://x-access-token:${GH_PAT}@github.com/${GITHUB_REPOSITORY}.git "v${{ steps.cargo_version.outputs.version }}"
+
