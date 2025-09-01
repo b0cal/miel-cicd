@@ -1,9 +1,6 @@
 name: Release
 
 on:
-  pull_request:
-    tags:
-      - "v*"
   push:
     tags:
       - "v*"
@@ -12,33 +9,37 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   github-release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
-      - uses: actions/setup-node@v3
+      - uses: davidB/rust-cargo-make@v1
+      - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: src/webui/package-lock.json
-      - name: Restore cargo cache
-        uses: actions/cache@v3
+
+      - name: Cache Rust build artifacts
+        uses: swatinem/rust-cache@v2
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            ~/.cargo/bin
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          workspaces: |
+            src/core -> target
 
       - name: Build production binary
         run: cargo make prod
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
-          files: src/core/target/release/miel
+          files: |
+            src/core/target/release/miel
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
