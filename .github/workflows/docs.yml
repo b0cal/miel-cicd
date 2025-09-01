@@ -1,0 +1,26 @@
+name: Docs
+
+on:
+  pull_request:
+    paths:
+      - "docs/**"
+  push:
+    branches: [main, dev]
+    paths:
+      - "docs/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  markdown-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Lint Markdown in docs/
+        run: npx --yes markdownlint-cli2 "docs/**/*.md"
+
