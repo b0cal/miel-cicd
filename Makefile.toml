@@ -33,7 +33,7 @@ dependencies = ["core-test", "webui-test"]
 [tasks.fmt]
 description = "Check Rust code formatting"
 cwd = "src/core"
-script = ["cargo fmt"]
+script = ["cargo fmt -- --check"]
 
 [tasks.fmt-fix]
 description = "Fix Rust code formatting"
@@ -70,12 +70,12 @@ dependencies = ["fmt-fix", "webui-format-fix"]
 
 [tasks.doc-lint]
 description = "Check documentation formatting"
-cwd = "doc"
+cwd = "docs"
 script = ["markdownlint-cli2 **/*.md"]
 
 [tasks.doc-lint-fix]
 description = "Fix documentation formatting"
-cwd = "doc"
+cwd = "docs"
 script = ["markdownlint-cli2 --fix **/*.md"]
 
 [tasks.core-audit]
