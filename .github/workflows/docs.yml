@@ -4,23 +4,62 @@ on:
   pull_request:
     paths:
       - "docs/**"
+      - "src/core/**"
   push:
     branches: [main, dev]
     paths:
       - "docs/**"
+      - "src/core/**"
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  markdown-lint:
+  lint-docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-      - name: Lint Markdown in docs/
-        run: npx --yes markdownlint-cli2 "docs/**/*.md"
+      - uses: davidB/rust-cargo-make@v1
 
+      - name: Lint Markdown documentation
+        run: cargo make doc-lint
+
+  build-api-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-make
+        uses: davidB/rust-cargo-make@v1
+
+      - name: Cache Rust build artifacts
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            src/core -> target
+
+      - name: Build Rust API docs
+        run: cargo make core-doc
+
+      - name: Publish rustdoc to gh-pages/api
+        if: github.event_name != 'pull_request'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: src/core/target/doc
+          destination_dir: api
+          keep_files: true
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
