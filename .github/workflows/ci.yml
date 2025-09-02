@@ -25,21 +25,12 @@ jobs:
       - uses: swatinem/rust-cache@v2
         with:
           workspaces: |
-            src/core -> target
+            src/core -> src/core/target
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: src/webui/package-lock.json
-
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            ~/.cargo/bin
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Install cargo-audit if missing
         run: if ! command -v cargo-audit >/dev/null 2>&1; then cargo install cargo-audit; fi
@@ -74,20 +65,15 @@ jobs:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
       - uses: davidB/rust-cargo-make@v1
-      - uses: actions/setup-node@v3
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            src/core -> src/core/target
+      - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: src/webui/package-lock.json
-
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            ~/.cargo/bin
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Run Rust tests
         run: cargo make core-test
@@ -101,20 +87,15 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
-      - uses: actions/setup-node@v3
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            src/core -> src/core/target
+      - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: src/webui/package-lock.json
-
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            ~/.cargo/bin
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Build production binary
         run: cargo make prod
