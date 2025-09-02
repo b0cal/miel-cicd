@@ -1,0 +1,59 @@
+name: RustDoc
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/core/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rustdoc-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-api-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: davidB/rust-cargo-make@v1
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            src/core -> target
+
+      - name: Build Rust API docs
+        run: cargo make core-doc
+
+      - name: Create API index redirect
+        run: |
+          cat > src/core/target/doc/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Miel API Documentation</title>
+            <meta http-equiv="refresh" content="0; url=miel/">
+            <link rel="canonical" href="miel/">
+          </head>
+          <body>
+            <p>Redirecting to <a href="miel/">Miel API Documentation</a>...</p>
+          </body>
+          </html>
+          EOF
+
+      - name: Publish rustdoc to gh-pages/api
+        if: github.event_name != 'pull_request'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: src/core/target/doc
+          destination_dir: api
+          keep_files: true
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
