@@ -147,15 +147,15 @@ jobs:
             
             # Check if current version is greater than latest version
             if [ "$current_version" = "$latest_version" ]; then
-              echo "❌ Version $current_version already exists as tag $latest_tag"
+              echo "::error:: Version $current_version already exists as tag $latest_tag"
               echo "Please bump the version in Cargo.toml before merging to main"
               echo "should_release=false" >> $GITHUB_OUTPUT
               exit 1
             elif printf '%s\n%s\n' "$latest_version" "$current_version" | sort -V -C; then
-              echo "✅ Version bumped from $latest_version to $current_version"
+              echo "::info:: Version bumped from $latest_version to $current_version"
               echo "should_release=true" >> $GITHUB_OUTPUT
             else
-              echo "❌ Version $current_version is not greater than latest version $latest_version"
+              echo "::error:: Version $current_version is not greater than latest version $latest_version"
               echo "Please ensure you're bumping the version correctly (following semver)"
               echo "should_release=false" >> $GITHUB_OUTPUT
               exit 1
@@ -173,10 +173,10 @@ jobs:
           
           # Double-check tag doesn't exist remotely
           if git ls-remote --tags origin | grep -q "refs/tags/$tag_name$"; then
-            echo "❌ Tag $tag_name already exists on remote"
+            echo "::error:: Tag $tag_name already exists on remote"
             exit 1
           fi
           
           git tag "$tag_name"
           git push https://x-access-token:${GH_PAT}@github.com/${GITHUB_REPOSITORY}.git "$tag_name"
-          echo "✅ Successfully created and pushed tag $tag_name"
+          echo "Successfully created and pushed tag $tag_name"
