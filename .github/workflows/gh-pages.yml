@@ -4,7 +4,7 @@ on:
   push:
     branches: ["gh-pages"]
   workflow_run:
-    workflows: ["Docs"]
+    workflows: ["RustDoc"]
     types:
       - completed
   workflow_dispatch:
