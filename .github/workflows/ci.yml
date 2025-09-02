@@ -26,6 +26,12 @@ jobs:
         with:
           workspaces: |
             src/core -> src/core/target
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin
+          key: ${{ runner.os }}-cargo-tools-${{ hashFiles('**/Cargo.lock', '**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-tools-
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -87,6 +93,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
+      - uses: davidB/rust-cargo-make@v1
       - uses: swatinem/rust-cache@v2
         with:
           workspaces: |
@@ -111,8 +118,7 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
       - name: Extract version from Cargo.toml
         id: cargo_version
